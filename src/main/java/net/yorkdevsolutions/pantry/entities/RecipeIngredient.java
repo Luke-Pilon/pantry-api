@@ -1,15 +1,18 @@
 package net.yorkdevsolutions.pantry.entities;
 
 import jakarta.persistence.*;
+import net.yorkdevsolutions.pantry.id_classes.RecipeIngredientId;
 
 @Entity
+@IdClass(RecipeIngredientId.class)
 public class RecipeIngredient {
+    @ManyToOne
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    private Item item;
 
     @ManyToOne
-    private Item item;
+    @Id
+    private Recipe recipe;
 
     private Long quantity;
 
@@ -19,14 +22,6 @@ public class RecipeIngredient {
     public RecipeIngredient(Item item, Long quantity) {
         this.item = item;
         this.quantity = quantity;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Item getItem() {
@@ -43,5 +38,13 @@ public class RecipeIngredient {
 
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public Recipe getRecipe() {
+        return recipe;
+    }
+
+    public void setRecipe(Recipe recipe) {
+        this.recipe = recipe;
     }
 }
