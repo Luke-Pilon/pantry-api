@@ -12,11 +12,9 @@ import java.util.Map;
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
-    private final RecipeService recipeService;
 
-    public ItemService(ItemRepository itemRepository, RecipeService recipeService) {
+    public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
-        this.recipeService = recipeService;
     }
 
     public Iterable<Item> getAllItems(){
@@ -55,8 +53,7 @@ public class ItemService {
         itemRepository.delete(itemRepository.findById(itemId).orElseThrow());
     }
 
-    public void updatePantryQuantitiesFromRecipe(Long recipeId) {
-        Recipe recipe = this.recipeService.findRecipeById(recipeId);
+    public void updatePantryQuantitiesFromRecipe(Recipe recipe) {
         //TODO
         //Make this a transaction instead
         for(RecipeIngredient ingredient : recipe.getIngredients()){

@@ -2,6 +2,7 @@ package net.yorkdevsolutions.pantry.controllers;
 
 import net.yorkdevsolutions.pantry.entities.Item;
 import net.yorkdevsolutions.pantry.services.ItemService;
+import net.yorkdevsolutions.pantry.services.RecipeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -14,9 +15,11 @@ import java.util.NoSuchElementException;
 @CrossOrigin
 public class ItemController {
     private final ItemService itemService;
+    private final RecipeService recipeService;
 
-    public ItemController(ItemService itemService) {
+    public ItemController(ItemService itemService, RecipeService recipeService) {
         this.itemService = itemService;
+        this.recipeService = recipeService;
     }
 
     @GetMapping
@@ -55,10 +58,10 @@ public class ItemController {
         }
     }
 
-    @PutMapping("/recipes/{recipeId}")
+    @PutMapping("/recipe/{recipeId}")
     public void updatePantryQuantitiesFromRecipe(@PathVariable Long recipeId){
         try {
-            itemService.updatePantryQuantitiesFromRecipe(recipeId);
+            itemService.updatePantryQuantitiesFromRecipe(recipeService.findRecipeById(recipeId));
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
