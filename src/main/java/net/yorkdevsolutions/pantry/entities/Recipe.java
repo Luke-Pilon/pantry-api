@@ -17,7 +17,7 @@ public class Recipe {
 
     private String imageUrl;
     
-    @OneToMany
+    @OneToMany(mappedBy = "recipe")
     private Set<RecipeIngredient> ingredients;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -32,7 +32,8 @@ public class Recipe {
         this.imageUrl = dto.getImageUrl();
         StringBuilder instructions = new StringBuilder();
         for(String instruction : dto.getInstructions()){
-            instructions.append(instruction + ";");
+            instructions.append(instruction);
+            instructions.append(";");
         }
         this.instructions = instructions.toString();
     }
