@@ -4,25 +4,27 @@ import net.yorkdevsolutions.pantry.entities.Item;
 import net.yorkdevsolutions.pantry.entities.Recipe;
 import net.yorkdevsolutions.pantry.entities.RecipeIngredient;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class RecipeDTO {
     private Long id;
     private String name;
     private String imageUrl;
     private List<String> instructions;
-    private Map<Item,Long> ingredients;
+    private List<RecipeIngredientDTO> ingredients;
+
+    public RecipeDTO() {
+    }
 
     public RecipeDTO(Recipe recipe) {
         this.id = recipe.getId();
         this.name = recipe.getName();
         this.imageUrl = recipe.getImageUrl();
-        this.instructions = Arrays.asList(recipe.getInstructions().split("^;"));
+        this.instructions = Arrays.asList(recipe.getInstructions().split(";"));
+        this.ingredients = new ArrayList<>();
         for(RecipeIngredient ingredient : recipe.getIngredients()){
-            this.ingredients.put(ingredient.getItem(), ingredient.getQuantity());
+            var ingredientDTO = new RecipeIngredientDTO(ingredient);
+            this.ingredients.add(ingredientDTO);
         }
     }
 
@@ -58,11 +60,11 @@ public class RecipeDTO {
         this.instructions = instructions;
     }
 
-    public Map<Item, Long> getIngredients() {
+    public List<RecipeIngredientDTO> getIngredients() {
         return ingredients;
     }
 
-    public void setIngredients(Map<Item, Long> ingredients) {
+    public void setIngredients(List<RecipeIngredientDTO> ingredients) {
         this.ingredients = ingredients;
     }
 }
