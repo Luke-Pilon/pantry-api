@@ -1,6 +1,7 @@
 package net.yorkdevsolutions.pantry.services;
 
 import net.yorkdevsolutions.pantry.dto.RecipeDTO;
+import net.yorkdevsolutions.pantry.dto.RecipeIngredientDTO;
 import net.yorkdevsolutions.pantry.entities.Account;
 import net.yorkdevsolutions.pantry.entities.Item;
 import net.yorkdevsolutions.pantry.entities.Recipe;
@@ -9,8 +10,6 @@ import net.yorkdevsolutions.pantry.repositories.AccountRepository;
 import net.yorkdevsolutions.pantry.repositories.RecipeIngredientRepository;
 import net.yorkdevsolutions.pantry.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 public class RecipeService {
@@ -37,14 +36,18 @@ public class RecipeService {
 
     public Recipe newRecipeFromDTO(RecipeDTO recipeDTO){
         Recipe newRecipe = new Recipe(recipeDTO);
-        for(Map.Entry<Item,Long> entry : recipeDTO.getIngredients().entrySet()){
+        recipeRepository.save(newRecipe);
+        for(RecipeIngredientDTO ingredientDTO : recipeDTO.getIngredients()){
+            Item item = null;
+            if(ingredientDTO.getItemId() != null){
+                item = this.itemService.getItemById(ingredientDTO.getItemId());
+            }
             RecipeIngredient ingredient;
-            Item item = this.itemService.getItemById(entry.getKey().getId());
-            if(item.equals(null)){
-                Item newItem = this.itemService.createItemFromNewRecipe(entry.getKey().getName());
-                ingredient = new RecipeIngredient(newItem, entry.getValue());
+            if(item == null){
+                Item newItem = this.itemService.createItemFromNewRecipe(ingredientDTO.getItemName());
+                ingredient = new RecipeIngredient(newItem, newRecipe, ingredientDTO.getQuantity());
             } else {
-                ingredient = new RecipeIngredient(item, entry.getValue());
+                ingredient = new RecipeIngredient(item, newRecipe, ingredientDTO.getQuantity());
             }
             ingredientRepository.save(ingredient);
             newRecipe.addIngredient(ingredient);
@@ -73,6 +76,7 @@ public class RecipeService {
         if(account == null | !account.getRecipes().contains(recipeToDelete)){
             throw new IllegalArgumentException();
         }
+        account.getRecipes().remove(recipeToDelete);
         this.recipeRepository.delete(recipeToDelete);
     }
 }
