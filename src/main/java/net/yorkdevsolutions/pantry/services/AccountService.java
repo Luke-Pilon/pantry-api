@@ -17,7 +17,8 @@ public class AccountService {
     }
 
     public Account registerAccount(Account account){
-        return this.repository.save(account);
+        this.repository.save(account);
+        return account;
     }
 
     public Account findAccountById(Long accountId){
