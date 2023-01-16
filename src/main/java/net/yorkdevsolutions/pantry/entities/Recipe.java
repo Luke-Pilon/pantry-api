@@ -3,6 +3,7 @@ package net.yorkdevsolutions.pantry.entities;
 import jakarta.persistence.*;
 import net.yorkdevsolutions.pantry.dto.RecipeDTO;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -17,7 +18,7 @@ public class Recipe {
 
     private String imageUrl;
     
-    @OneToMany(mappedBy = "recipe")
+    @OneToMany(mappedBy = "recipe", orphanRemoval = true)
     private Set<RecipeIngredient> ingredients;
 
     @Column(nullable = false, columnDefinition = "TEXT")
@@ -36,6 +37,7 @@ public class Recipe {
             instructions.append(";");
         }
         this.instructions = instructions.toString();
+        this.ingredients = new HashSet<RecipeIngredient>();
     }
 
     public Long getId() {
