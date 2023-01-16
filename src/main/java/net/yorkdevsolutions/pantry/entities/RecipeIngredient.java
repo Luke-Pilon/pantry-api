@@ -19,8 +19,9 @@ public class RecipeIngredient {
     public RecipeIngredient() {
     }
 
-    public RecipeIngredient(Item item, Long quantity) {
+    public RecipeIngredient(Item item, Recipe recipe, Long quantity) {
         this.item = item;
+        this.recipe = recipe;
         this.quantity = quantity;
     }
 
