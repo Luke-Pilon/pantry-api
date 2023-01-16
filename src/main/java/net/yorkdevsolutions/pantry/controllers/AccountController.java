@@ -31,10 +31,9 @@ public class AccountController {
     }
 
     @PostMapping()
-    public AccountDTO registerAccount(@RequestBody Account accountRequest){
+    public Account registerAccount(@RequestBody Account accountRequest){
         try {
-            Account account = this.accountService.registerAccount(accountRequest);
-            return new AccountDTO(account);
+            return this.accountService.registerAccount(accountRequest);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
         }
