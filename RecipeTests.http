@@ -1,0 +1,57 @@
+POST http://localhost:8080/recipes/accounts/2
+Content-Type: application/json
+
+{
+  "name": "testrecipe4",
+  "instructions": [
+    "Cut up everything",
+    "Put it in the pot",
+    "Cook it"
+  ],
+  "ingredients": [
+    {
+      "itemName": "ginger",
+      "quantity": 3
+    },
+    {
+      "itemId": 2,
+      "itemName": "garlic",
+      "quantity": 2
+    }
+  ]
+}
+
+###
+GET http://localhost:8080/recipes/1
+Accept: application/json
+
+###
+PUT http://localhost:8080/recipes/accounts/2/recipes/102
+Content-Type: application/json
+
+{
+  "id": 102,
+  "name": "testrecipe2",
+  "instructions": [
+    "Cut up everything",
+    "Put it in the pot",
+    "Cook it"
+  ],
+  "ingredients": [
+    {
+      "itemId": 1,
+      "itemName": "onion",
+      "quantity": 4
+    },
+    {
+      "itemId": 2,
+      "itemName": "garlic",
+      "quantity": 2
+    }
+  ]
+}
+###
+DELETE http://localhost:8080/recipes/accounts/2/recipes/102
+Accept: application/json
+
+###
