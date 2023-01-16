@@ -10,11 +10,12 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
 
+    @Column(unique = true)
     private String name;
 
     private String password;
 
-    @OneToMany
+    @OneToMany(orphanRemoval = true)
     private Set<Recipe> recipes;
 
     public Long getId() {
