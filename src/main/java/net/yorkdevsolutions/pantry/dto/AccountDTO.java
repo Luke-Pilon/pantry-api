@@ -10,6 +10,9 @@ public class AccountDTO {
     private String name;
     private Set<RecipeDTO> recipes;
 
+    public AccountDTO() {
+    }
+
     public AccountDTO(Account account) {
         this.id = account.getId();
         this.name = account.getName();
