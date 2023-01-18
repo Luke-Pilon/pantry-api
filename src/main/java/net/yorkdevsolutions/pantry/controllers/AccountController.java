@@ -34,7 +34,7 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public AccountDTO getAccountByid(@PathVariable Long id){
+    public AccountDTO getAccountById(@PathVariable Long id){
         try {
             Account account = this.accountService.findAccountById(id);
             return new AccountDTO(account);
