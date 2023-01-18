@@ -16,6 +16,10 @@ public class AccountService {
         return this.repository.findAccountByNameAndPassword(name,password).orElseThrow();
     }
 
+    public Account getAccountById(Long id){
+        return this.repository.findById(id).orElseThrow();
+    }
+
     public Account registerAccount(Account account){
         this.repository.save(account);
         return account;
