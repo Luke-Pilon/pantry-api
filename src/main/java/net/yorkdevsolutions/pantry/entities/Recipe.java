@@ -16,6 +16,7 @@ public class Recipe {
     @Column(unique = true, nullable = false)
     private String name;
 
+    @Column(columnDefinition = "text")
     private String imageUrl;
     
     @OneToMany(mappedBy = "recipe", orphanRemoval = true)

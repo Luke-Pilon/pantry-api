@@ -11,6 +11,7 @@ public class Item {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(columnDefinition = "text")
     private String imageUrl;
 
     private String unitMeasuredIn;
