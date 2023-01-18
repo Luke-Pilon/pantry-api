@@ -38,6 +38,9 @@ public class RecipeService {
         Recipe newRecipe = new Recipe(recipeDTO);
         recipeRepository.save(newRecipe);
         for(RecipeIngredientDTO ingredientDTO : recipeDTO.getIngredients()){
+            if(ingredientDTO.getQuantity() < 1){
+                throw new IllegalArgumentException();
+            }
             Item item = null;
             if(ingredientDTO.getItemId() != null){
                 item = this.itemService.getItemById(ingredientDTO.getItemId());
