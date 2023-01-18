@@ -64,6 +64,7 @@ public class ItemService {
         for(RecipeIngredient ingredient : recipe.getIngredients()) {
             Long newUnitsAvailable = ingredient.getItem().getUnitsAvailable() - ingredient.getQuantity();
             ingredient.getItem().setUnitsAvailable(newUnitsAvailable);
+            itemRepository.save(ingredient.getItem());
         }
     }
 
