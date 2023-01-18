@@ -21,6 +21,9 @@ public class AccountService {
     }
 
     public Account registerAccount(Account account){
+        if(account.getId() != null){
+            account.setId(null);
+        }
         this.repository.save(account);
         return account;
     }
