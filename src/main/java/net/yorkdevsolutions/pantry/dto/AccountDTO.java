@@ -3,6 +3,7 @@ package net.yorkdevsolutions.pantry.dto;
 import net.yorkdevsolutions.pantry.entities.Account;
 import net.yorkdevsolutions.pantry.entities.Recipe;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class AccountDTO {
@@ -16,6 +17,7 @@ public class AccountDTO {
     public AccountDTO(Account account) {
         this.id = account.getId();
         this.name = account.getName();
+        this.recipes = new HashSet<>();
         for(Recipe recipe : account.getRecipes()){
             var recipeDTO = new RecipeDTO(recipe);
             this.recipes.add(recipeDTO);
