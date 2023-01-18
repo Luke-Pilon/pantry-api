@@ -25,15 +25,29 @@ public class AccountController {
         try {
             Account account = this.accountService.login(name,password);
             return new AccountDTO(account);
-        } catch (Exception e) {
+        } catch(NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        } catch (Exception e) {
+            System.out.println(e);
+            throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public AccountDTO getAccountByid(@PathVariable Long id){
+        try {
+            Account account = this.accountService.findAccountById(id);
+            return new AccountDTO(account);
+        } catch(Exception e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping()
-    public Account registerAccount(@RequestBody Account accountRequest){
+    public AccountDTO registerAccount(@RequestBody Account accountRequest){
         try {
-            return this.accountService.registerAccount(accountRequest);
+            Account newAccount = this.accountService.registerAccount(accountRequest);
+            return new AccountDTO(newAccount);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
         }
