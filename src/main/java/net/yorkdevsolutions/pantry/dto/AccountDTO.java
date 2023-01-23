@@ -18,9 +18,11 @@ public class AccountDTO {
         this.id = account.getId();
         this.name = account.getName();
         this.recipes = new HashSet<>();
-        for(Recipe recipe : account.getRecipes()){
-            var recipeDTO = new RecipeDTO(recipe);
-            this.recipes.add(recipeDTO);
+        if(account.getRecipes() != null){
+            for(Recipe recipe : account.getRecipes()){
+                var recipeDTO = new RecipeDTO(recipe);
+                this.recipes.add(recipeDTO);
+            }
         }
     }
 
