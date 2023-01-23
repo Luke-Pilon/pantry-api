@@ -28,7 +28,6 @@ public class AccountController {
         } catch(NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         } catch (Exception e) {
-            System.out.println(e);
             throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
         }
     }
