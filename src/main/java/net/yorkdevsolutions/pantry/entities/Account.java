@@ -15,8 +15,18 @@ public class Account {
 
     private String password;
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Recipe> recipes;
+
+    public Account() {
+    }
+
+    public Account(Long id, String name, String password, Set<Recipe> recipes) {
+        this.id = id;
+        this.name = name;
+        this.password = password;
+        this.recipes = recipes;
+    }
 
     public Long getId() {
         return id;
