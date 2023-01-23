@@ -70,11 +70,14 @@ public class RecipeService {
 
     public void deleteRecipeById(Long accountId, Long recipeId){
         Recipe recipeToDelete = this.recipeRepository.findById(recipeId).orElseThrow();
-        Account account = this.accountRepository.findById(accountId).orElse(null);
-        if(account == null | !account.getRecipes().contains(recipeToDelete)){
+        Account account = this.accountRepository.findById(accountId).orElseThrow();
+        try {
+            if(account.getRecipes().contains(recipeToDelete)){
+                account.getRecipes().remove(recipeToDelete);
+                this.recipeRepository.delete(recipeToDelete);
+            }
+        } catch (Exception e) {
             throw new IllegalArgumentException();
         }
-        account.getRecipes().remove(recipeToDelete);
-        this.recipeRepository.delete(recipeToDelete);
     }
 }
