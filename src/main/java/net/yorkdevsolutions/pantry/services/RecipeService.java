@@ -7,7 +7,6 @@ import net.yorkdevsolutions.pantry.entities.Item;
 import net.yorkdevsolutions.pantry.entities.Recipe;
 import net.yorkdevsolutions.pantry.entities.RecipeIngredient;
 import net.yorkdevsolutions.pantry.repositories.AccountRepository;
-import net.yorkdevsolutions.pantry.repositories.RecipeIngredientRepository;
 import net.yorkdevsolutions.pantry.repositories.RecipeRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,20 +14,17 @@ import org.springframework.stereotype.Service;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final AccountRepository accountRepository;
-    private final RecipeIngredientRepository ingredientRepository;
     private final ItemService itemService;
 
-    public RecipeService(RecipeRepository recipeRepository, AccountRepository accountRepository, RecipeIngredientRepository ingredientRepository, ItemService itemService) {
+    public RecipeService(RecipeRepository recipeRepository, AccountRepository accountRepository, ItemService itemService) {
         this.recipeRepository = recipeRepository;
         this.accountRepository = accountRepository;
-        this.ingredientRepository = ingredientRepository;
         this.itemService = itemService;
     }
 
     public Recipe createRecipe(Long accountId, RecipeDTO recipeDTO) {
         Account account = this.accountRepository.findById(accountId).orElseThrow();
         Recipe newRecipe = newRecipeFromDTO(recipeDTO);
-        recipeRepository.save(newRecipe);
         account.addRecipe(newRecipe);
         accountRepository.save(account);
         return newRecipe;
@@ -52,7 +48,6 @@ public class RecipeService {
             } else {
                 ingredient = new RecipeIngredient(item, newRecipe, ingredientDTO.getQuantity());
             }
-            ingredientRepository.save(ingredient);
             newRecipe.addIngredient(ingredient);
         }
         return newRecipe;
