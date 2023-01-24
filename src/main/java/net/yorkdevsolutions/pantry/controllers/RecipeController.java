@@ -20,16 +20,21 @@ public class RecipeController {
         this.service = service;
     }
 
-    @PostMapping("/accounts/{accountId}")
-    public RecipeDTO createRecipe(@PathVariable UUID accountId, @RequestBody RecipeDTO recipeDTO){
+    @PostMapping()
+    public RecipeDTO createRecipe(@RequestHeader("Authorization") UUID authToken, @RequestBody RecipeDTO recipeDTO){
         try {
-            Recipe recipe = this.service.createRecipe(accountId,recipeDTO);
+            Recipe recipe = this.service.createRecipe(authToken,recipeDTO);
             return new RecipeDTO(recipe);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
         }
+    }
+
+    @GetMapping()
+    public Iterable<RecipeDTO> getRecipesByAccount(@RequestHeader("Authorization") UUID authToken){
+        return this.service.getRecipesByUser(authToken);
     }
 
     @GetMapping("/{recipeId}")
@@ -42,20 +47,20 @@ public class RecipeController {
         }
     }
 
-    @PutMapping("/accounts/{accountId}/recipes/{recipeId}")
-    public RecipeDTO editRecipe(@PathVariable Long recipeId, @PathVariable UUID accountId, @RequestBody RecipeDTO updatedRecipe){
+    @PutMapping("/{recipeId}")
+    public RecipeDTO editRecipe(@PathVariable Long recipeId, @RequestHeader("Authorization") UUID authToken, @RequestBody RecipeDTO updatedRecipe){
         try {
-            Recipe recipe = service.putRecipe(recipeId, accountId, updatedRecipe);
+            Recipe recipe = service.putRecipe(recipeId, authToken, updatedRecipe);
             return new RecipeDTO(recipe);
         } catch(Exception e) {
             throw new ResponseStatusException(HttpStatus.PRECONDITION_FAILED);
         }
     }
 
-    @DeleteMapping("/accounts/{accountId}/recipes/{recipeId}")
-    public void deleteRecipe(@PathVariable UUID accountId, @PathVariable Long recipeId){
+    @DeleteMapping("/{recipeId}")
+    public void deleteRecipe(@RequestHeader("Authorization") UUID authToken, @PathVariable Long recipeId){
         try {
-            service.deleteRecipeById(accountId, recipeId);
+            service.deleteRecipeById(authToken, recipeId);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
