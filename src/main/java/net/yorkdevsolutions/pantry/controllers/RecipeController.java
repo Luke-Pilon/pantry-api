@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/recipes")
@@ -20,7 +21,7 @@ public class RecipeController {
     }
 
     @PostMapping("/accounts/{accountId}")
-    public RecipeDTO createRecipe(@PathVariable Long accountId, @RequestBody RecipeDTO recipeDTO){
+    public RecipeDTO createRecipe(@PathVariable UUID accountId, @RequestBody RecipeDTO recipeDTO){
         try {
             Recipe recipe = this.service.createRecipe(accountId,recipeDTO);
             return new RecipeDTO(recipe);
@@ -42,7 +43,7 @@ public class RecipeController {
     }
 
     @PutMapping("/accounts/{accountId}/recipes/{recipeId}")
-    public RecipeDTO editRecipe(@PathVariable Long recipeId, @PathVariable Long accountId, @RequestBody RecipeDTO updatedRecipe){
+    public RecipeDTO editRecipe(@PathVariable Long recipeId, @PathVariable UUID accountId, @RequestBody RecipeDTO updatedRecipe){
         try {
             Recipe recipe = service.putRecipe(recipeId, accountId, updatedRecipe);
             return new RecipeDTO(recipe);
@@ -52,7 +53,7 @@ public class RecipeController {
     }
 
     @DeleteMapping("/accounts/{accountId}/recipes/{recipeId}")
-    public void deleteRecipe(@PathVariable Long accountId, @PathVariable Long recipeId){
+    public void deleteRecipe(@PathVariable UUID accountId, @PathVariable Long recipeId){
         try {
             service.deleteRecipeById(accountId, recipeId);
         } catch (NoSuchElementException e) {
