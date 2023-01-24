@@ -5,6 +5,7 @@ import net.yorkdevsolutions.pantry.dto.RecipeDTO;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 public class Recipe {
@@ -24,10 +25,13 @@ public class Recipe {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String instructions;
 
+    @Column(nullable = false)
+    private UUID accountId;
+
     public Recipe() {
     }
 
-    public Recipe(RecipeDTO dto){
+    public Recipe(RecipeDTO dto, UUID account){
         this.id = dto.getId();
         this.name = dto.getName();
         this.imageUrl = dto.getImageUrl();
@@ -38,6 +42,7 @@ public class Recipe {
         }
         this.instructions = instructions.toString();
         this.ingredients = new HashSet<>();
+        this.accountId = account;
     }
 
     public Long getId() {
@@ -82,5 +87,13 @@ public class Recipe {
 
     public void setInstructions(String instructions) {
         this.instructions = instructions;
+    }
+
+    public UUID getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(UUID account) {
+        this.accountId = account;
     }
 }
