@@ -38,3 +38,6 @@ out/
 
 ### Database ###
 database/data
+
+###Http ###
+*.http
