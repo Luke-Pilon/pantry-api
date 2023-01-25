@@ -1,5 +1,6 @@
-POST http://localhost:8080/recipes/accounts/2
+POST http://localhost:8080/recipes
 Content-Type: application/json
+Authorization: 037d7148-3c14-489f-ac1f-ad5723a87ce6
 
 {
   "name": "testrecipe4",
