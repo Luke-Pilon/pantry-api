@@ -22,7 +22,7 @@ import java.util.UUID;
 public class RecipeService {
     private final RecipeRepository recipeRepository;
     private final ItemService itemService;
-    private RestTemplate client;
+    private final RestTemplate client;
     @Value("${net.yorksolutions.authUrl}")
     private String authUrl;
 
@@ -49,8 +49,7 @@ public class RecipeService {
         return recipeRepository.save(recipe);
     }
 
-    public Recipe newRecipeFromDTO(RecipeDTO recipeDTO, UUID authToken){
-        UUID accountId = this.getAccountIdFromAuthToken(authToken);
+    public Recipe newRecipeFromDTO(RecipeDTO recipeDTO, UUID accountId){
         Recipe newRecipe = new Recipe(recipeDTO, accountId);
         recipeRepository.save(newRecipe);
         for(RecipeIngredientDTO ingredientDTO : recipeDTO.getIngredients()){
