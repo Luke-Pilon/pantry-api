@@ -44,7 +44,6 @@ public class RecipeService {
 
     public Recipe createRecipe(UUID authToken, RecipeDTO recipeDTO) {
         UUID accountId = this.getAccountIdFromAuthToken(authToken);
-        //ERROR is being thrown somewhere after this
         Recipe recipe = newRecipeFromDTO(recipeDTO, accountId);
         return recipeRepository.save(recipe);
     }
@@ -88,7 +87,8 @@ public class RecipeService {
         if(!existingRecipe.getAccountId().equals(accountId)){
             throw new IllegalArgumentException();
         }
-        return this.recipeRepository.save(createRecipe(accountId,updatedRecipe));
+        Recipe recipe = newRecipeFromDTO(updatedRecipe,accountId);
+        return this.recipeRepository.save(recipe);
     }
 
     public void deleteRecipeById(UUID authToken, Long recipeId){
