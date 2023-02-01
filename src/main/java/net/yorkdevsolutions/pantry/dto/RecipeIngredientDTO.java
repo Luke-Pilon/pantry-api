@@ -7,6 +7,8 @@ public class RecipeIngredientDTO {
     private String itemName;
     private Long quantity;
 
+    private String measuredIn;
+
     public RecipeIngredientDTO() {
     }
 
@@ -14,6 +16,7 @@ public class RecipeIngredientDTO {
         this.itemId = ingredient.getItem().getId();
         this.itemName = ingredient.getItem().getName();
         this.quantity = ingredient.getQuantity();
+        this.measuredIn = ingredient.getItem().getUnitMeasuredIn();
     }
 
     public Long getItemId() {
@@ -38,5 +41,13 @@ public class RecipeIngredientDTO {
 
     public void setQuantity(Long quantity) {
         this.quantity = quantity;
+    }
+
+    public String getMeasuredIn() {
+        return measuredIn;
+    }
+
+    public void setMeasuredIn(String measuredIn) {
+        this.measuredIn = measuredIn;
     }
 }
