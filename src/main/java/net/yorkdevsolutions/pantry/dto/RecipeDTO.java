@@ -13,6 +13,8 @@ public class RecipeDTO {
     private List<String> instructions;
     private List<RecipeIngredientDTO> ingredients;
 
+    private Long totalCalories;
+
     public RecipeDTO() {
     }
 
@@ -22,8 +24,10 @@ public class RecipeDTO {
         this.imageUrl = recipe.getImageUrl();
         this.instructions = Arrays.asList(recipe.getInstructions().split(";"));
         this.ingredients = new ArrayList<>();
+        this.totalCalories = 0L;
         for(RecipeIngredient ingredient : recipe.getIngredients()){
             var ingredientDTO = new RecipeIngredientDTO(ingredient);
+            this.totalCalories += ingredient.getItem().getCaloriesPerUnit() * ingredient.getQuantity();
             this.ingredients.add(ingredientDTO);
         }
     }
@@ -66,5 +70,13 @@ public class RecipeDTO {
 
     public void setIngredients(List<RecipeIngredientDTO> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public Long getTotalCalories() {
+        return totalCalories;
+    }
+
+    public void setTotalCalories(Long totalCalories) {
+        this.totalCalories = totalCalories;
     }
 }
