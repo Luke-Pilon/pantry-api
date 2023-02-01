@@ -6,6 +6,7 @@ import net.yorkdevsolutions.pantry.entities.RecipeIngredient;
 import net.yorkdevsolutions.pantry.repositories.ItemRepository;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -53,26 +54,33 @@ public class ItemService {
         itemRepository.delete(itemRepository.findById(itemId).orElseThrow());
     }
 
-    public void updatePantryQuantitiesFromRecipe(Recipe recipe) {
+    public ArrayList<Item> updatePantryQuantitiesFromRecipe(Recipe recipe) {
         //TODO
         //Make this a transaction instead
+        ArrayList<Item> itemsMissing = new ArrayList<>();
         for(RecipeIngredient ingredient : recipe.getIngredients()){
             if(ingredient.getQuantity() > ingredient.getItem().getUnitsAvailable()){
-                throw new IllegalArgumentException();
+                itemsMissing.add(ingredient.getItem());
             }
+        }
+        if(itemsMissing.size() > 0){
+            return itemsMissing;
         }
         for(RecipeIngredient ingredient : recipe.getIngredients()) {
             Long newUnitsAvailable = ingredient.getItem().getUnitsAvailable() - ingredient.getQuantity();
             ingredient.getItem().setUnitsAvailable(newUnitsAvailable);
             itemRepository.save(ingredient.getItem());
         }
+        return null;
     }
 
-    public Iterable<Item> updateMultipleItemQuantities(Map<Item, Long> itemsToAdd) {
+    public Iterable<Item> updateMultipleItemQuantities(Map<Long, Long> itemsToAdd) {
+        //Items to add is a map where the item id is the key and quantity to add is the number to increase inventory by
         var itemsUpdated = new ArrayList<Item>();
-        for(Map.Entry<Item,Long> entry : itemsToAdd.entrySet()){
-            Item item = entry.getKey();
-            if(entry.getValue() > 0){
+        for(Map.Entry<Long,Long> entry : itemsToAdd.entrySet()){
+            var _item = this.itemRepository.findById(entry.getKey());
+            var item = _item.get();
+            if(item != null && entry.getValue() > 0){
                 Long newQuantity = item.getUnitsAvailable() + entry.getValue();
                 item.setUnitsAvailable(newQuantity);
             }

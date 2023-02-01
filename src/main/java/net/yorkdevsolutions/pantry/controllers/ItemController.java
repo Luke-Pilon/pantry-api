@@ -5,8 +5,10 @@ import net.yorkdevsolutions.pantry.services.ItemService;
 import net.yorkdevsolutions.pantry.services.RecipeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.http.HttpResponse;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
@@ -59,9 +61,9 @@ public class ItemController {
     }
 
     @PutMapping("/recipe/{recipeId}")
-    public void updatePantryQuantitiesFromRecipe(@PathVariable Long recipeId){
+    public Iterable<Item> updatePantryQuantitiesFromRecipe(@PathVariable Long recipeId){
         try {
-            itemService.updatePantryQuantitiesFromRecipe(recipeService.findRecipeById(recipeId));
+            return itemService.updatePantryQuantitiesFromRecipe(recipeService.findRecipeById(recipeId));
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         } catch (IllegalArgumentException e) {
@@ -69,8 +71,13 @@ public class ItemController {
         }
     }
 
-    @PutMapping("/shop")
-    public Iterable<Item> updateMultipleItemQuantities(@RequestBody Map<Item,Long> itemsToAdd){
-        return this.itemService.updateMultipleItemQuantities(itemsToAdd);
+    @PutMapping(value = "/shop", consumes = "application/json")
+    public Iterable<Item> updateMultipleItemQuantities(@RequestBody Map<Long,Long> itemsToAdd){
+        try {
+            return this.itemService.updateMultipleItemQuantities(itemsToAdd);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 }
