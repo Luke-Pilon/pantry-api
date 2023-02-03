@@ -3,6 +3,7 @@ package net.yorkdevsolutions.pantry.dto;
 import net.yorkdevsolutions.pantry.entities.Item;
 import net.yorkdevsolutions.pantry.entities.Recipe;
 import net.yorkdevsolutions.pantry.entities.RecipeIngredient;
+import net.yorkdevsolutions.pantry.unit_conversion.CalorieCalculator;
 
 import java.util.*;
 
@@ -27,7 +28,7 @@ public class RecipeDTO {
         this.totalCalories = 0L;
         for(RecipeIngredient ingredient : recipe.getIngredients()){
             var ingredientDTO = new RecipeIngredientDTO(ingredient);
-            this.totalCalories += ingredient.getItem().getCaloriesPerUnit() * ingredient.getQuantity();
+            this.totalCalories += CalorieCalculator.getIngredientCalories(ingredient);
             this.ingredients.add(ingredientDTO);
         }
     }

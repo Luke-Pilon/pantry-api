@@ -1,6 +1,7 @@
 package net.yorkdevsolutions.pantry.entities;
 
 import jakarta.persistence.*;
+import net.yorkdevsolutions.pantry.unit_conversion.MeasurementType;
 
 @Entity
 public class Item {
@@ -14,11 +15,13 @@ public class Item {
     @Column(columnDefinition = "text")
     private String imageUrl;
 
-    private String unitMeasuredIn;
+    private MeasurementType measurementType;
+
+    private String measurementName;
 
     private Long caloriesPerUnit;
 
-    private Long unitsAvailable;
+    private double unitsAvailable;
 
     public Item() {
     }
@@ -26,9 +29,10 @@ public class Item {
     public Item(String name) {
         this.name = name;
         this.imageUrl = null;
-        this.unitMeasuredIn = "gram";
+        this.measurementType = MeasurementType.UNIT;
+        this.measurementName = "";
         this.caloriesPerUnit = 0L;
-        this.unitsAvailable = 0L;
+        this.unitsAvailable = 0;
     }
 
     public Long getId() {
@@ -55,12 +59,12 @@ public class Item {
         this.imageUrl = imageUrl;
     }
 
-    public String getUnitMeasuredIn() {
-        return unitMeasuredIn;
+    public MeasurementType getMeasurementType() {
+        return measurementType;
     }
 
-    public void setUnitMeasuredIn(String unitMeasuredIn) {
-        this.unitMeasuredIn = unitMeasuredIn;
+    public void setMeasurementType(MeasurementType measurementType) {
+        this.measurementType = measurementType;
     }
 
     public Long getCaloriesPerUnit() {
@@ -71,11 +75,19 @@ public class Item {
         this.caloriesPerUnit = caloriesPerUnit;
     }
 
-    public Long getUnitsAvailable() {
+    public double getUnitsAvailable() {
         return unitsAvailable;
     }
 
-    public void setUnitsAvailable(Long unitsAvailable) {
+    public void setUnitsAvailable(double unitsAvailable) {
         this.unitsAvailable = unitsAvailable;
+    }
+
+    public String getMeasurementName() {
+        return measurementName;
+    }
+
+    public void setMeasurementName(String measurementName) {
+        this.measurementName = measurementName;
     }
 }

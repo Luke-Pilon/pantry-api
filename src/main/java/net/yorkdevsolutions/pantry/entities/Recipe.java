@@ -73,6 +73,8 @@ public class Recipe {
         this.ingredients.add(ingredient);
     }
 
+    public void removeIngredient(RecipeIngredient ingredient) {this.ingredients.remove(ingredient);}
+
     public String getImageUrl() {
         return imageUrl;
     }

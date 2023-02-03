@@ -1,10 +1,15 @@
 package net.yorkdevsolutions.pantry.services;
 
+import jakarta.transaction.Transactional;
 import net.yorkdevsolutions.pantry.entities.Item;
 import net.yorkdevsolutions.pantry.entities.Recipe;
 import net.yorkdevsolutions.pantry.entities.RecipeIngredient;
 import net.yorkdevsolutions.pantry.repositories.ItemRepository;
+import net.yorkdevsolutions.pantry.unit_conversion.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -51,27 +56,58 @@ public class ItemService {
     }
 
     public void deleteItemById(Long itemId) {
+
         itemRepository.delete(itemRepository.findById(itemId).orElseThrow());
     }
 
-    public ArrayList<Item> updatePantryQuantitiesFromRecipe(Recipe recipe) {
-        //TODO
-        //Make this a transaction instead
-        ArrayList<Item> itemsMissing = new ArrayList<>();
+    @Transactional
+    public void updatePantryQuantitiesFromRecipe(Recipe recipe) {
+        ArrayList<String> itemsMissing = new ArrayList<>();
         for(RecipeIngredient ingredient : recipe.getIngredients()){
-            if(ingredient.getQuantity() > ingredient.getItem().getUnitsAvailable()){
-                itemsMissing.add(ingredient.getItem());
+            double quantity = ingredient.getQuantity() + FractionToDecimal.fractionToDecimal(ingredient.getQuantityFraction());
+            Item item = ingredient.getItem();
+            double newQuantity;
+            if(item.getMeasurementName().equals(ingredient.getMeasuredIn())){
+                newQuantity = item.getUnitsAvailable() - quantity;
+            } else {
+                var measurementType = item.getMeasurementType();
+                switch(measurementType){
+                    case VOLUME: {
+                        var ingredientMeasurement = VolumeMeasurement.valueOf(ingredient.getMeasuredIn().toUpperCase());
+                        var ingredientInTsp = VolumeConverter.convertToTsp(quantity, ingredientMeasurement);
+                        var itemMeasurement = VolumeMeasurement.valueOf(item.getMeasurementName().toUpperCase());
+                        var inventoryInTsp = VolumeConverter.convertToTsp(item.getUnitsAvailable(), itemMeasurement);
+                        var difference = inventoryInTsp - ingredientInTsp;
+                        newQuantity = VolumeConverter.convertFromTsp(difference, itemMeasurement);
+                        break;
+                    }
+                    case WEIGHT: {
+                        var ingredientMeasurement = WeightMeasurement.valueOf(ingredient.getMeasuredIn().toUpperCase());
+                        var ingredientInGram = WeightConverter.convertToGram(quantity, ingredientMeasurement);
+                        var itemMeasurement = WeightMeasurement.valueOf(item.getMeasurementName().toUpperCase());
+                        var inventoryInGram = WeightConverter.convertToGram(item.getUnitsAvailable(), itemMeasurement);
+                        var difference = inventoryInGram - ingredientInGram;
+                        newQuantity = WeightConverter.convertFromGram(difference, itemMeasurement);
+                        break;
+                    }
+                    default: {
+                        newQuantity = item.getUnitsAvailable() - quantity;
+                        break;
+                    }
+                }
+            }
+            newQuantity = newQuantity * 100;
+            newQuantity = Math.round(newQuantity);
+            newQuantity = newQuantity / 100;
+            item.setUnitsAvailable(newQuantity);
+            if(item.getUnitsAvailable() < 0){
+                itemsMissing.add(item.getName());
             }
         }
         if(itemsMissing.size() > 0){
-            return itemsMissing;
+            String itemsMissingMessage = String.join(", ", itemsMissing);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, itemsMissingMessage);
         }
-        for(RecipeIngredient ingredient : recipe.getIngredients()) {
-            Long newUnitsAvailable = ingredient.getItem().getUnitsAvailable() - ingredient.getQuantity();
-            ingredient.getItem().setUnitsAvailable(newUnitsAvailable);
-            itemRepository.save(ingredient.getItem());
-        }
-        return null;
     }
 
     public Iterable<Item> updateMultipleItemQuantities(Map<Long, Long> itemsToAdd) {
@@ -81,7 +117,7 @@ public class ItemService {
             var _item = this.itemRepository.findById(entry.getKey());
             var item = _item.get();
             if(item != null && entry.getValue() > 0){
-                Long newQuantity = item.getUnitsAvailable() + entry.getValue();
+                double newQuantity = item.getUnitsAvailable() + entry.getValue();
                 item.setUnitsAvailable(newQuantity);
             }
             itemsUpdated.add(item);

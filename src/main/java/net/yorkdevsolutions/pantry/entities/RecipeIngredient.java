@@ -16,13 +16,19 @@ public class RecipeIngredient {
 
     private Long quantity;
 
+    private String quantityFraction;
+
+    private String measuredIn;
+
     public RecipeIngredient() {
     }
 
-    public RecipeIngredient(Item item, Recipe recipe, Long quantity) {
+    public RecipeIngredient(Item item, Recipe recipe, Long quantity, String quantityFraction, String measuredIn) {
         this.item = item;
         this.recipe = recipe;
         this.quantity = quantity;
+        this.quantityFraction = quantityFraction;
+        this.measuredIn = measuredIn;
     }
 
     public Item getItem() {
@@ -47,5 +53,21 @@ public class RecipeIngredient {
 
     public void setRecipe(Recipe recipe) {
         this.recipe = recipe;
+    }
+
+    public String getMeasuredIn() {
+        return measuredIn;
+    }
+
+    public void setMeasuredIn(String measuredIn) {
+        this.measuredIn = measuredIn;
+    }
+
+    public String getQuantityFraction() {
+        return quantityFraction;
+    }
+
+    public void setQuantityFraction(String quantityFraction) {
+        this.quantityFraction = quantityFraction;
     }
 }

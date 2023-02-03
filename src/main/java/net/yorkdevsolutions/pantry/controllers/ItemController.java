@@ -52,6 +52,7 @@ public class ItemController {
     @DeleteMapping("/{itemId}")
     public void deleteItemById(@PathVariable Long itemId){
         try {
+            this.recipeService.removeAllItemRelationships(itemId);
             this.itemService.deleteItemById(itemId);
         } catch (NoSuchElementException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND);
@@ -61,14 +62,8 @@ public class ItemController {
     }
 
     @PutMapping("/recipe/{recipeId}")
-    public Iterable<Item> updatePantryQuantitiesFromRecipe(@PathVariable Long recipeId){
-        try {
-            return itemService.updatePantryQuantitiesFromRecipe(recipeService.findRecipeById(recipeId));
-        } catch (NoSuchElementException e) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
+    public void updatePantryQuantitiesFromRecipe(@PathVariable Long recipeId){
+        itemService.updatePantryQuantitiesFromRecipe(recipeService.findRecipeById(recipeId));
     }
 
     @PutMapping(value = "/shop", consumes = "application/json")

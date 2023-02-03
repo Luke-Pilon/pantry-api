@@ -62,9 +62,9 @@ public class RecipeService {
             RecipeIngredient ingredient;
             if(item == null){
                 Item newItem = this.itemService.createItemFromNewRecipe(ingredientDTO.getItemName());
-                ingredient = new RecipeIngredient(newItem, newRecipe, ingredientDTO.getQuantity());
+                ingredient = new RecipeIngredient(newItem, newRecipe, ingredientDTO.getQuantity(), ingredientDTO.getQuantityFraction(), ingredientDTO.getMeasuredIn());
             } else {
-                ingredient = new RecipeIngredient(item, newRecipe, ingredientDTO.getQuantity());
+                ingredient = new RecipeIngredient(item, newRecipe, ingredientDTO.getQuantity(), ingredientDTO.getQuantityFraction(), ingredientDTO.getMeasuredIn());
             }
             newRecipe.addIngredient(ingredient);
         }
@@ -111,6 +111,18 @@ public class RecipeService {
             return response.getBody();
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    public void removeAllItemRelationships(Long itemId){
+        Item item = this.itemService.getItemById(itemId);
+        for(Recipe recipe : recipeRepository.findAll()) {
+            for (RecipeIngredient ingredient : recipe.getIngredients()) {
+                if (ingredient.getItem().equals(item)) {
+                    recipe.removeIngredient(ingredient);
+                }
+            }
+            recipeRepository.save(recipe);
         }
     }
 }
