@@ -71,7 +71,6 @@ public class ItemController {
         try {
             return this.itemService.updateMultipleItemQuantities(itemsToAdd);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
     }
